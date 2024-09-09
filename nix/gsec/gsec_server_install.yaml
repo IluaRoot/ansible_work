@@ -1,6 +1,6 @@
 ---
 - name: Download and install GsecTLS server
-  hosts: st21
+  hosts: gsec
   become: true
   gather_facts: false
   vars:
