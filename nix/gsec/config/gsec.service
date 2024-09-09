@@ -1,0 +1,11 @@
+[Unit]
+Description=gsec
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/local/sbin/GSecTLS
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

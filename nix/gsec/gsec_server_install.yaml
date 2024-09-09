@@ -1,0 +1,61 @@
+---
+- name: Download and install GsecTLS server
+  hosts: st21
+  become: true
+  gather_facts: false
+  vars:
+    deb_url: "URL here"
+  tasks:
+
+    - name: Copy gsec from local
+      ansible.builtin.copy:
+        remote_src: false
+        src: "./deb/gsectls_1.1.0-1_amd64.deb"
+        dest: "$HOME/gsectls_1.1.0-1_amd64.deb"
+
+    - name: Download deb package
+      ansible.builtin.apt:
+#        deb: "{{ deb_url }}"
+        deb: "$HOME/gsectls_1.1.0-1_amd64.deb"
+    
+    - name: Make log directory
+      ansible.builtin.file:
+        path: /var/log/gsectls
+        state: directory
+        mode: '0755'
+
+    - name: Copy certs
+      ansible.builtin.copy:
+        remote_src: false
+        src: "certs/"
+        dest: /usr/local/etc/GSecTLS/certs/
+
+    - name: Copy conf file
+      ansible.builtin.copy:
+        remote_src: false
+        src: "config/GSecTLS.conf"
+        dest: /usr/local/etc/GSecTLS/GSecTLS.conf
+        owner: root
+        group: root
+
+    - name: Copy service file
+      ansible.builtin.copy:
+        remote_src: false
+        src: "config/gsec.service"
+        dest: /etc/systemd/system/gsec.service
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Enable and start service gsectls
+      ansible.builtin.service:
+        name: gsec
+        enabled: true
+        state: started
+
+    - name: Cronjob for certs download
+      ansible.builtin.cron:
+        name: "downloads cert"
+        minute: "0"
+        hour: "0"
+        job: "wget  -O /usr/local/etc/GSecTLS/certs/ruc.crl.pem https://crs.nces.by/files/sertifikaty/ruc.crl.pem"
