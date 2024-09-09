@@ -10,7 +10,7 @@
     - name: Copy gsec from local
       ansible.builtin.copy:
         remote_src: false
-        src: "./deb/gsectls_1.1.0-1_amd64.deb"
+        src: "./package/gsectls_1.1.0-1_amd64.deb"
         dest: "$HOME/gsectls_1.1.0-1_amd64.deb"
 
     - name: Download deb package
@@ -27,13 +27,13 @@
     - name: Copy certs
       ansible.builtin.copy:
         remote_src: false
-        src: "certs/"
+        src: "./certs/"
         dest: /usr/local/etc/GSecTLS/certs/
 
     - name: Copy conf file
       ansible.builtin.copy:
         remote_src: false
-        src: "config/GSecTLS.conf"
+        src: "./config/GSecTLS.conf"
         dest: /usr/local/etc/GSecTLS/GSecTLS.conf
         owner: root
         group: root
@@ -41,7 +41,7 @@
     - name: Copy service file
       ansible.builtin.copy:
         remote_src: false
-        src: "config/gsec.service"
+        src: "./config/gsec.service"
         dest: /etc/systemd/system/gsec.service
         owner: root
         group: root
